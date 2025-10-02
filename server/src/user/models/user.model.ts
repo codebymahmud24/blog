@@ -1,30 +1,36 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { HydratedDocument } from "mongoose";
-import { userRoles } from "src/utility/userRoles";
-
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import Mongoose, { HydratedDocument } from 'mongoose';
+import { userRoles } from 'src/utility/userRoles';
 
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({
-    timestamps: true,
-
+  timestamps: true,
+  id: false,
+  toJSON: {
+    virtuals: true,
+    transform: function (doc: any, ret: any) {
+      delete ret.__v;
+      return ret;
+    },
+  },
 })
 export class User {
-    @Prop()
-    name: string;
+  _id?: Mongoose.Types.ObjectId;
+  @Prop()
+  name: string;
 
-    @Prop()
-    password: string;
+  @Prop({ select: false })
+  password: string;
 
-    @Prop()
-    email: string;
+  @Prop()
+  email: string;
 
-    @Prop()
-    avatar: string;
+  @Prop()
+  avatar: string;
 
-    // defult is "reader"
-    @Prop({ type: String, enum: userRoles, default: userRoles.Reader })
-    role: string;
-
+  // defult is "reader"
+  @Prop({ type: [String], enum: [userRoles], default: userRoles.Reader })
+  role: string[];
 }
 export const UserSchema = SchemaFactory.createForClass(User);
