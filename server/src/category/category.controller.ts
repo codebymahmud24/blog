@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Types } from 'mongoose';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { AuthenticationGuard } from 'src/utility/guards/authentication.guard';
+import { AuthorizeGuard } from 'src/utility/guards/authorize.guard';
+import { userRoles } from 'src/utility/userRoles';
+import { Category } from './models/category.model';
 
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+    @UseGuards(AuthenticationGuard,AuthorizeGuard([userRoles.Admin]))
+  async create(@Body() createCategoryDto: CreateCategoryDto) :Promise<Category> {
+    return await this.categoryService.create(createCategoryDto);
   }
 
-  @Get()
-  findAll() {
-    return this.categoryService.findAll();
+ @Get()
+  async findAll():Promise<Category[]> {
+    return await this.categoryService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoryService.findOne(+id);
+ @Get(':id')
+  async findOne(@Param('id') id: string):Promise<Category> {
+    return await this.categoryService.findOne(new Types.ObjectId(id));
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
-    return this.categoryService.update(+id, updateCategoryDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
+  //   return this.categoryService.update(+id, updateCategoryDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoryService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.categoryService.remove(+id);
+  // }
 }
