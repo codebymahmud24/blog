@@ -8,7 +8,7 @@ import { AuthorizeGuard } from 'src/utility/guards/authorize.guard';
 import { AuthenticationGuard } from 'src/utility/guards/authentication.guard';
 import { Tag } from './models/tag.model';
 
-@Controller('tag')
+@Controller('tags')
 export class TagController {
   constructor(private readonly tagService: TagService) {}
 

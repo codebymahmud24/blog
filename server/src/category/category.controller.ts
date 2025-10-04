@@ -8,7 +8,7 @@ import { AuthorizeGuard } from 'src/utility/guards/authorize.guard';
 import { userRoles } from 'src/utility/userRoles';
 import { Category } from './models/category.model';
 
-@Controller('category')
+@Controller('categories')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
